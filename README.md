@@ -160,4 +160,4 @@ The repo dogfoods itself: `ephemeris run -- go test ./...` runs the test suite i
 
 ## License
 
-MIT
+[MIT](LICENSE)
