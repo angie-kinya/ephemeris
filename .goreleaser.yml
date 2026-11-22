@@ -1,0 +1,35 @@
+# goreleaser release --clean   (CI runs this on v* tags; see .github/workflows/release.yml)
+version: 2
+
+project_name: ephemeris
+
+before:
+  hooks:
+    - go mod tidy -diff
+
+builds:
+  - id: ephemeris
+    main: ./cmd/ephemeris
+    binary: ephemeris
+    env:
+      - CGO_ENABLED=0
+    goos: [linux, darwin]
+    goarch: [amd64, arm64]
+    flags: [-trimpath]
+    ldflags:
+      - -s -w -X main.version={{.Version}}
+    mod_timestamp: "{{ .CommitTimestamp }}" # reproducible binaries
+
+archives:
+  - id: default
+    formats: [tar.gz]
+    name_template: "{{ .ProjectName }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}"
+
+checksum:
+  name_template: checksums.txt
+  algorithm: sha256
+
+changelog:
+  sort: asc
+  filters:
+    exclude: ["^docs:", "^test:", "^chore:"]

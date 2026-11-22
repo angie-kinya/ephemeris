@@ -1,0 +1,16 @@
+# Dogfood spec: run Ephemeris's own tests inside an Ephemeris sandbox
+#   ephemeris run -- go test ./...
+name: ephemeris-dev
+backend: docker
+image: docker.io/library/golang:1.26-alpine
+shell: [/bin/sh]
+ttl: 30m
+env:
+  GOPATH: /tmp/go # caches live in tmpfs, not in your shipped tree
+  GOCACHE: /tmp/go-build
+  GOFLAGS: -buildvcs=false # the archive has no .git directory
+  CGO_ENABLED: "0"
+resources: {cpu: 2, memory: 2GiB, pids: 512, disk: 1GiB}
+source: {path: .}
+network:
+  mode: open 
